@@ -1,0 +1,202 @@
+/* General Container for Homepage */
+.homepage {
+  width: 100%;
+  min-height: calc(100vh - 60px); /* Adjust based on your NavBar height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Add some padding around the content */
+  box-sizing: border-box; /* Include padding in element's total width and height */
+  font-family: 'Inter', sans-serif; /* Ensure font is applied */
+}
+
+/* Logged-in welcome section styling */
+.logged-in-welcome {
+  text-align: center;
+  background-color: #f8f8f8;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.logged-in-welcome h2 {
+  color: #28a745; /* Green color */
+  margin-bottom: 20px;
+}
+
+.logged-in-welcome p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #333;
+}
+
+.logged-in-welcome a {
+  color: #007bff; /* Blue link color */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.logged-in-welcome a:hover {
+  text-decoration: underline;
+}
+
+
+/* Hero Section for Not Logged In */
+.hero-section {
+  width: 100%;
+  max-width: 1200px; /* Max width to contain the hero section */
+  height: 500px; /* Fixed height for the hero section */
+  /* NEW BACKGROUND IMAGE: A generic crop field or hand holding plant */
+  background-image: url('https://images.unsplash.com/photo-1516253509930-b39174697950?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MDcxMzJ8MHwxfHNlYXJjaHw0fHByYW50aW5nfGVufDB8fHx8MTcwMDQzNjg2OXww&ixlib=rb-4.0.3&q=80&w=1080');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 15px; /* Rounded corners for the entire section */
+  overflow: hidden; /* Ensures content/overlay respects rounded corners */
+  display: flex;
+  align-items: center; /* Vertically center content wrapper */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  position: relative; /* For absolute positioning of overlay/content */
+}
+
+.hero-content-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align content to the left */
+  padding-left: 5%; /* Padding from the left edge */
+  box-sizing: border-box;
+  /* Green overlay with a curved shape using gradients */
+  background: linear-gradient(to right, rgba(40, 167, 69, 0.9) 0%, rgba(40, 167, 69, 0.9) 50%, rgba(40, 167, 69, 0) 100%);
+  clip-path: ellipse(60% 100% at 0% 50%); /* Creates a left-side curved overlay */
+  transform: translateX(-10%); /* Adjust to move the curve more to the left */
+  padding: 50px 0; /* Vertical padding */
+  z-index: 1; /* Ensure it's above the background image */
+}
+
+/* Adjust the hero-content wrapper to make the green section a bit wider */
+.hero-content-wrapper {
+    width: 70%; /* Make it wider to cover more of the image from left */
+    /* Other styles as above */
+    padding-left: 10%; /* More padding from the left edge */
+}
+
+
+.hero-content {
+  color: white; /* White text for contrast */
+  text-align: left;
+  max-width: 400px; /* Limit content width */
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 2; /* Ensure text is above the green overlay */
+  transform: translateX(10%); /* Shift content slightly right to sit within the curve */
+}
+
+.hero-content h1 {
+  font-size: 3.5em; /* Larger heading */
+  margin-bottom: 10px;
+  line-height: 1.1;
+  font-weight: bold;
+}
+
+.hero-content p {
+  font-size: 1.2em;
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+.join-us-button {
+  display: inline-block;
+  background-color: #fff; /* White background for the button */
+  color: #28a744; /* Green text matching the theme */
+  padding: 12px 25px;
+  border-radius: 30px; /* Pill-shaped button */
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Button shadow */
+  display: flex; /* Use flex to align text and arrow */
+  align-items: center;
+  gap: 8px; /* Space between text and arrow */
+}
+
+.join-us-button:hover {
+  background-color: #f0f0f0;
+  color: #1e7e34; /* Slightly darker green on hover */
+}
+
+.arrow-icon {
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+
+.join-us-button:hover .arrow-icon {
+  transform: translateX(5px); /* Slide arrow on hover */
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .hero-section {
+    height: 400px; /* Adjust height for smaller screens */
+  }
+
+  .hero-content-wrapper {
+    width: 80%; /* Make green overlay wider */
+    clip-path: ellipse(75% 100% at 0% 50%); /* Adjust curve */
+    transform: translateX(-15%);
+    padding-left: 8%;
+  }
+
+  .hero-content {
+    max-width: 300px;
+    font-size: 0.9em;
+  }
+
+  .hero-content h1 {
+    font-size: 2.5em;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-section {
+    height: 350px; /* Further adjust height */
+    border-radius: 10px;
+  }
+
+  .hero-content-wrapper {
+    width: 100%; /* Make green overlay full width */
+    clip-path: none; /* Remove curve for very small screens */
+    transform: translateX(0);
+    justify-content: center; /* Center content on small screens */
+    padding: 20px;
+  }
+
+  .hero-content {
+    max-width: 90%;
+    text-align: center;
+    transform: translateX(0);
+    padding: 15px;
+  }
+
+  .hero-content h1 {
+    font-size: 2em;
+  }
+
+  .hero-content p {
+    font-size: 1em;
+    margin-bottom: 15px;
+  }
+
+  .join-us-button {
+    padding: 10px 20px;
+    font-size: 1em;
+  }
+}

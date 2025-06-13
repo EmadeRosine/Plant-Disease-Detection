@@ -28,16 +28,14 @@ const connectDB = async () => {
         await sequelize.authenticate();
         console.log('PostgreSQL connected successfully!');
 
-        // FOR DEVELOPMENT ONLY: Sync models to database
-        // Use `force: true` to drop tables and recreate them (DANGEROUS IN PRODUCTION!)
-        // Use `alter: true` to try and alter existing tables to match model definitions
+    
         console.log('Syncing database models...');
-        await sequelize.sync({ alter: true }); // Use alter: true for non-destructive updates
+        await sequelize.sync({ alter: true }); 
         console.log('Database models synced.');
 
     } catch (error) {
         console.error('Unable to connect to the database or sync models:', error);
-        process.exit(1); // Exit process with failure
+        process.exit(1); 
     }
 };
 

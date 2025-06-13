@@ -1,5 +1,5 @@
 // src/controllers/diagnosisController.js
-const { Op } = require('sequelize'); // For 'IN' operator
+const { Op } = require('sequelize');
 const db = require('../models');
 const Plant = db.Plant;
 const Symptom = db.Symptom;
@@ -7,26 +7,26 @@ const Disease = db.Disease;
 const User = db.User;
 const Diagnosis = db.Diagnosis;
 const ExpertValidation = db.ExpertValidation;
-const axios = require('axios'); // For making HTTP requests to the AI service
+const axios = require('axios');
 
 const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5001/predict';
 
-// --- Helper Function: Call AI Service ---
+// --- Helper Function: Call AI Service (accepts plant_id and symptom_ids) ---
 const callAiService = async (plantId, observedSymptomIds) => {
     try {
         console.log(`[AI Service Call] Attempting to call AI service at ${AI_SERVICE_URL}`);
         console.log(`[AI Service Call] Sending data: Plant ID: ${plantId}, Symptoms: [${observedSymptomIds.join(', ')}]`);
 
         const aiServiceResponse = await axios.post(
-    AI_SERVICE_URL,
-    {
-        plant_id: plantId,
-        symptom_ids: observedSymptomIds
-    },
-    {
-        family: 4 // This forces Axios to use IPv4
-    }
-);
+            AI_SERVICE_URL,
+            {
+                plant_id: plantId,
+                symptom_ids: observedSymptomIds
+            },
+            {
+                family: 4 // Explicitly force IPv4 to avoid ECONNREFUSED ::1 issues
+            }
+        );
 
         const predictedDiseaseName = aiServiceResponse.data.predicted_disease_name;
 
@@ -52,8 +52,6 @@ const callAiService = async (plantId, observedSymptomIds) => {
     } catch (error) {
         console.error('[AI Service Call] Error calling AI service:');
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
             console.error('  Response Data:', error.response.data);
             console.error('  Response Status:', error.response.status);
             console.error('  Response Headers:', error.response.headers);
@@ -61,58 +59,110 @@ const callAiService = async (plantId, observedSymptomIds) => {
                 console.error('  AI service reported an internal error. Message:', error.response.data.message || 'No specific message.');
             }
         } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an http.ClientRequest in node.js
             console.error('  Request made but no response received. Details:');
-            console.error('  Error message:', error.message); // This will show the actual network error (e.g., ECONNREFUSED)
-            console.error('  Error code:', error.code);     // This will show the error code (e.g., ECONNREFUSED)
-            console.error('  Request object:', error.request); // Log the request object itself for more info
+            console.error('  Error message:', error.message);
+            console.error('  Error code:', error.code);
+            console.error('  Request object:', error.request);
             console.error('  Is the AI service running on', AI_SERVICE_URL, '?');
         } else {
-            // Something happened in setting up the request that triggered an Error
             console.error('  Error setting up AI service request:', error.message);
         }
         return null;
     }
 };
 
-// --- Helper Function: Rule-Based Preliminary Diagnosis (Example) ---
+// --- Helper Function: Rule-Based Preliminary Diagnosis (Expanded Rules) ---
 const getPreliminaryDiagnosis = async (plantId, observedSymptomIds) => {
-    // This is a simple, example rule-based system.
-    // You can expand this logic significantly.
-    // Example: If Plant is 'Tomato' (ID 1) and symptoms include 'Leaf Spot' (ID 1) and 'Wilting' (ID 2)
-    if (plantId === 1 && observedSymptomIds.includes(1) && observedSymptomIds.includes(2)) {
-        const tomatoBlight = await Disease.findOne({ where: { name: 'Tomato Blight' } });
-        if (tomatoBlight) {
-            return tomatoBlight.id;
-        }
-    }
-    // No preliminary diagnosis if rules don't match
-    return null;
-};
+    let diagnosisId = null;
 
-// --- Controller Functions ---
+    // --- Tomato-related rules (Plant ID 1) ---
+    // Rule 1.1: Early Blight for Tomato
+    if (plantId === 1 && observedSymptomIds.includes(1) && observedSymptomIds.includes(2)) { // Leaf Spot (1), Wilting (2)
+        const earlyBlight = await Disease.findOne({ where: { name: 'Early Blight' } });
+        if (earlyBlight) diagnosisId = earlyBlight.id;
+    }
+    // Rule 1.2: Late Blight for Tomato
+    else if (plantId === 1 && observedSymptomIds.includes(1) && observedSymptomIds.includes(5)) { // Leaf Spot (1), Fruit Lesions (5)
+        const lateBlight = await Disease.findOne({ where: { name: 'Late Blight' } });
+        if (lateBlight) diagnosisId = lateBlight.id;
+    }
+    // Rule 1.3: Fusarium Wilt for Tomato
+    else if (plantId === 1 && observedSymptomIds.includes(2) && observedSymptomIds.includes(3)) { // Wilting (2), Yellowing Leaves (3)
+        const fusariumWilt = await Disease.findOne({ where: { name: 'Fusarium Wilt' } });
+        if (fusariumWilt) diagnosisId = fusariumWilt.id;
+    }
+    // Rule 1.4: Powdery Mildew for Tomato (general symptom)
+    else if (plantId === 1 && observedSymptomIds.includes(7)) { // Powdery Mildew (7)
+        const powderyMildew = await Disease.findOne({ where: { name: 'Powdery Mildew' } });
+        if (powderyMildew) diagnosisId = powderyMildew.id;
+    }
+
+    // --- Potato-related rules (Plant ID 2) ---
+    // Rule 2.1: Early Blight for Potato
+    else if (plantId === 2 && observedSymptomIds.includes(1) && observedSymptomIds.includes(2)) { // Leaf Spot (1), Wilting (2)
+        const earlyBlight = await Disease.findOne({ where: { name: 'Early Blight' } });
+        if (earlyBlight) diagnosisId = earlyBlight.id;
+    }
+    // Rule 2.2: Late Blight for Potato
+    else if (plantId === 2 && observedSymptomIds.includes(1) && observedSymptomIds.includes(4)) { // Leaf Spot (1), Stem Rot (4)
+        const lateBlight = await Disease.findOne({ where: { name: 'Late Blight' } });
+        if (lateBlight) diagnosisId = lateBlight.id;
+    }
+    // Rule 2.3: Powdery Mildew for Potato (general symptom)
+    else if (plantId === 2 && observedSymptomIds.includes(7)) { // Powdery Mildew (7)
+        const powderyMildew = await Disease.findOne({ where: { name: 'Powdery Mildew' } });
+        if (powderyMildew) diagnosisId = powderyMildew.id;
+    }
+
+    // --- Corn-related rules (Plant ID 3) ---
+    // Rule 3.1: Corn Common Rust
+    else if (plantId === 3 && observedSymptomIds.includes(6) && observedSymptomIds.includes(3)) { // Rust Spots (6), Yellowing Leaves (3)
+        const cornCommonRust = await Disease.findOne({ where: { name: 'Corn Common Rust' } });
+        if (cornCommonRust) diagnosisId = cornCommonRust.id;
+    }
+    // Rule 3.2: General Yellowing (if not specific rust)
+    else if (plantId === 3 && observedSymptomIds.includes(3)) { // Yellowing Leaves (3)
+        // Could suggest general nutrient deficiency or early blight if nothing else matches
+        const earlyBlight = await Disease.findOne({ where: { name: 'Early Blight' } }); // Use a common one as fallback
+        if (earlyBlight) diagnosisId = earlyBlight.id;
+    }
+
+
+    // --- Cucumber-related rules (Plant ID 4) ---
+    // Rule 4.1: Cucumber Mosaic Virus
+    else if (plantId === 4 && observedSymptomIds.includes(8) && observedSymptomIds.includes(2)) { // Mosaic Pattern (8), Wilting (2)
+        const cucumberMosaicVirus = await Disease.findOne({ where: { name: 'Cucumber Mosaic Virus' } });
+        if (cucumberMosaicVirus) diagnosisId = cucumberMosaicVirus.id;
+    }
+    // Rule 4.2: Powdery Mildew for Cucumber
+    else if (plantId === 4 && observedSymptomIds.includes(7)) { // Powdery Mildew (7)
+        const powderyMildew = await Disease.findOne({ where: { name: 'Powdery Mildew' } });
+        if (powderyMildew) diagnosisId = powderyMildew.id;
+    }
+
+    // Add more rules as you expand your database and knowledge base.
+    // Ensure the disease names here exactly match those in your `seed.js` and `Disease` model.
+
+    return diagnosisId;
+};
 
 // @desc    Submit a new diagnosis request
 // @route   POST /api/diagnoses
 // @access  Private (Farmer, Expert, Admin)
 const submitDiagnosis = async (req, res) => {
     const { plant_id, observed_symptom_ids, farmer_notes } = req.body;
-    const farmer_id = req.user.id; // User ID from authenticated request
+    const farmer_id = req.user.id;
 
-    // Basic input validation
     if (!plant_id || !observed_symptom_ids || observed_symptom_ids.length === 0) {
         return res.status(400).json({ error: 'Please provide plant_id and at least one observed_symptom_id.' });
     }
 
     try {
-        // Validate if plant exists
         const plantExists = await Plant.findByPk(plant_id);
         if (!plantExists) {
             return res.status(404).json({ error: 'Plant not found.' });
         }
 
-        // Validate if all observed symptoms exist
         const symptomsExist = await Symptom.findAll({
             where: {
                 id: { [Op.in]: observed_symptom_ids }
@@ -122,15 +172,12 @@ const submitDiagnosis = async (req, res) => {
             return res.status(404).json({ error: 'One or more observed symptoms not found.' });
         }
 
-        // Get preliminary diagnosis based on rules
         const preliminaryDiagnosisId = await getPreliminaryDiagnosis(plant_id, observed_symptom_ids);
         console.log(`[Diagnosis Submit] Preliminary Diagnosis ID: ${preliminaryDiagnosisId}`);
 
-        // Call AI service for suggestion
         const aiSuggestedDiagnosisId = await callAiService(plant_id, observed_symptom_ids);
         console.log(`[Diagnosis Submit] AI Suggested Diagnosis ID: ${aiSuggestedDiagnosisId}`);
 
-        // Create the diagnosis record
         const diagnosis = await Diagnosis.create({
             plant_id,
             farmer_id,
@@ -138,7 +185,7 @@ const submitDiagnosis = async (req, res) => {
             farmer_notes,
             preliminary_diagnosis_id: preliminaryDiagnosisId,
             ai_suggested_diagnosis_id: aiSuggestedDiagnosisId,
-            status: 'pending_review' // Initial status
+            status: 'pending_review'
         });
 
         res.status(201).json(diagnosis);
@@ -149,16 +196,21 @@ const submitDiagnosis = async (req, res) => {
     }
 };
 
+/// agri-diagnosis-app/backend/src/controllers/diagnosisController.js
+
+// ... (other imports and functions like callAiService, getPreliminaryDiagnosis, submitDiagnosis remain the same) ...
+
 // @desc    Get all diagnosis requests
 // @route   GET /api/diagnoses
 // @access  Private (Expert, Admin) - Farmers can only see their own via /api/users/:id/diagnoses
 const getDiagnoses = async (req, res) => {
     try {
-        const diagnoses = await Diagnosis.findAll({
+        // Fetch all diagnoses with their associated plant, farmer, disease, and expert validation info
+        let diagnoses = await Diagnosis.findAll({ // Use 'let' because we will modify the 'diagnoses' array
             include: [
                 { model: Plant, as: 'plant', attributes: ['id', 'name', 'image_url'] },
                 { model: User, as: 'farmer', attributes: ['id', 'username'] },
-                { model: Disease, as: 'preliminaryDiagnosis', attributes: ['id', 'name'], required: false }, // Use required: false for LEFT JOIN
+                { model: Disease, as: 'preliminaryDiagnosis', attributes: ['id', 'name'], required: false },
                 { model: Disease, as: 'aiSuggestedDiagnosis', attributes: ['id', 'name'], required: false },
                 {
                     model: ExpertValidation,
@@ -173,6 +225,25 @@ const getDiagnoses = async (req, res) => {
             order: [['created_at', 'DESC']] // Order by newest first
         });
 
+        // For each diagnosis, manually fetch the observed symptom details (names)
+        // observed_symptom_ids is an ARRAY of integers, so we need a separate query for them
+        diagnoses = await Promise.all(diagnoses.map(async (diagnosis) => {
+            if (diagnosis.observed_symptom_ids && diagnosis.observed_symptom_ids.length > 0) {
+                const observedSymptoms = await Symptom.findAll({
+                    where: {
+                        id: { [Op.in]: diagnosis.observed_symptom_ids } // Find symptoms whose IDs are in the array
+                    },
+                    attributes: ['id', 'name'] // Only fetch ID and name to keep payload light
+                });
+                // Attach the full symptom objects (or just their names) to the diagnosis object
+                // We use diagnosis.dataValues to modify the plain data object that Sequelize returns
+                diagnosis.dataValues.ObservedSymptoms = observedSymptoms;
+            } else {
+                diagnosis.dataValues.ObservedSymptoms = []; // Ensure it's an empty array if no symptoms
+            }
+            return diagnosis;
+        }));
+
         res.status(200).json(diagnoses);
     } catch (error) {
         console.error('Error fetching diagnoses:', error);
@@ -185,13 +256,14 @@ const getDiagnoses = async (req, res) => {
 // @access  Private (Expert, Admin, or Farmer if their own diagnosis)
 const getDiagnosis = async (req, res) => {
     try {
-        const diagnosis = await Diagnosis.findByPk(req.params.id, {
+        // Fetch the single diagnosis with all its associated data
+        let diagnosis = await Diagnosis.findByPk(req.params.id, { // Use 'let'
             include: [
                 { model: Plant, as: 'plant', attributes: ['id', 'name', 'image_url'] },
                 { model: User, as: 'farmer', attributes: ['id', 'username'] },
                 { model: Disease, as: 'preliminaryDiagnosis', attributes: ['id', 'name'], required: false },
                 { model: Disease, as: 'aiSuggestedDiagnosis', attributes: ['id', 'name'], required: false },
-                { model: Disease, as: 'finalDiagnosis', attributes: ['id', 'name'], required: false }, // Final diagnosis after validation
+                { model: Disease, as: 'finalDiagnosis', attributes: ['id', 'name'], required: false },
                 {
                     model: ExpertValidation,
                     as: 'expertValidation',
@@ -208,10 +280,24 @@ const getDiagnosis = async (req, res) => {
             return res.status(404).json({ error: 'Diagnosis not found.' });
         }
 
-        // Authorize: Expert/Admin can see any, Farmer can only see their own
+        // Authorization check for farmers to only view their own diagnoses
         if (req.user.role === 'farmer' && diagnosis.farmer_id !== req.user.id) {
             return res.status(403).json({ error: 'Access denied: You can only view your own diagnoses.' });
         }
+
+        // Manually fetch and attach observed symptom details for this single diagnosis
+        if (diagnosis.observed_symptom_ids && diagnosis.observed_symptom_ids.length > 0) {
+            const observedSymptoms = await Symptom.findAll({
+                where: {
+                    id: { [Op.in]: diagnosis.observed_symptom_ids }
+                },
+                attributes: ['id', 'name']
+            });
+            diagnosis.dataValues.ObservedSymptoms = observedSymptoms;
+        } else {
+            diagnosis.dataValues.ObservedSymptoms = [];
+        }
+
 
         res.status(200).json(diagnosis);
     } catch (error) {
@@ -220,15 +306,15 @@ const getDiagnosis = async (req, res) => {
     }
 };
 
+
 // @desc    Validate a diagnosis request (by an expert)
 // @route   PUT /api/diagnoses/:id/validate
 // @access  Private (Expert, Admin)
 const validateDiagnosis = async (req, res) => {
     const { expert_diagnosis_id, validation_status, expert_notes } = req.body;
     const diagnosisId = req.params.id;
-    const expert_id = req.user.id; // Expert ID from authenticated request
+    const expert_id = req.user.id;
 
-    // Input validation
     if (!expert_diagnosis_id || !validation_status) {
         return res.status(400).json({ error: 'Please provide expert_diagnosis_id and validation_status.' });
     }
@@ -247,15 +333,12 @@ const validateDiagnosis = async (req, res) => {
             return res.status(404).json({ error: 'Expert provided an invalid disease ID.' });
         }
 
-        // Determine the previous diagnosis ID for ExpertValidation record
         const previousDiagnosisId = diagnosis.ai_suggested_diagnosis_id || diagnosis.preliminary_diagnosis_id;
 
-        // Update diagnosis status and final diagnosis
         diagnosis.status = validation_status;
-        diagnosis.final_diagnosis_id = expert_diagnosis_id; // Set final diagnosis
+        diagnosis.final_diagnosis_id = expert_diagnosis_id;
         await diagnosis.save();
 
-        // Find or create ExpertValidation record
         const [expertValidation, created] = await ExpertValidation.findOrCreate({
             where: { diagnosis_id: diagnosisId },
             defaults: {
@@ -263,21 +346,19 @@ const validateDiagnosis = async (req, res) => {
                 new_diagnosis_id: expert_diagnosis_id,
                 validation_status: validation_status,
                 notes: expert_notes,
-                previous_diagnosis_id: previousDiagnosisId // Record what was there before
+                previous_diagnosis_id: previousDiagnosisId
             }
         });
 
-        // If validation record already existed, update it
         if (!created) {
             expertValidation.expert_id = expert_id;
             expertValidation.new_diagnosis_id = expert_diagnosis_id;
             expertValidation.validation_status = validation_status;
             expertValidation.notes = expert_notes;
-            expertValidation.validated_at = db.Sequelize.literal('CURRENT_TIMESTAMP'); // Update timestamp
+            expertValidation.validated_at = db.Sequelize.literal('CURRENT_TIMESTAMP');
             await expertValidation.save();
         }
 
-        // Fetch the updated diagnosis with full details for response
         const updatedDiagnosis = await Diagnosis.findByPk(diagnosisId, {
             include: [
                 { model: Plant, as: 'plant', attributes: ['id', 'name'] },
@@ -309,10 +390,8 @@ const validateDiagnosis = async (req, res) => {
 // @route   GET /api/users/:userId/diagnoses
 // @access  Private (Farmer can get their own, Expert/Admin can get any)
 const getDiagnosesByFarmer = async (req, res) => {
-    const targetUserId = parseInt(req.params.userId, 10); // Ensure it's an integer
+    const targetUserId = parseInt(req.params.userId, 10);
 
-    // Authorization check: Farmers can only request their own diagnoses
-    // Experts/Admins can request any farmer's diagnoses
     if (req.user.role === 'farmer' && req.user.id !== targetUserId) {
         return res.status(403).json({ error: 'Access denied: You can only view your own diagnoses.' });
     }
@@ -351,12 +430,10 @@ const getDiagnosesByFarmer = async (req, res) => {
     }
 };
 
-
-// Export all controller functions as an object
 module.exports = {
     submitDiagnosis,
     getDiagnoses,
     getDiagnosis,
     validateDiagnosis,
-    getDiagnosesByFarmer // Export the new function
+    getDiagnosesByFarmer
 };

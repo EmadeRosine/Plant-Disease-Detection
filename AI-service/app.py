@@ -108,4 +108,72 @@ def home():
         return "AI Prediction Service is running but ML model is NOT loaded (check server logs)."
 
 if __name__ == '__main__':
+    app.run(debug=True, host='127.0.0.1', port=5001)# agri-diagnosis-app/ai-service/app.py
+from flask import Flask, request, jsonify
+from flask_cors import CORS # To allow cross-origin requests from Node.js backend
+
+app = Flask(__name__)
+CORS(app) # Enable CORS for all routes
+
+# This is the rule-based "AI" as originally defined.
+# It maps a combination of plant_id and symptom_ids to a predicted disease name.
+PREDICTION_RULES = {
+    # Tomato Diseases (Plant ID 1)
+    (1, frozenset([1, 2])): "Early Blight",         # Tomato, Leaf Spot (1), Wilting (2)
+    (1, frozenset([1, 2, 5])): "Late Blight",      # Tomato, Leaf Spot (1), Wilting (2), Fruit Lesions (5)
+    (1, frozenset([2, 3])): "Fusarium Wilt",       # Tomato, Wilting (2), Yellowing Leaves (3)
+    (1, frozenset([7])): "Powdery Mildew",         # Tomato, Powdery Mildew (7) - general
+    (1, frozenset([2, 3, 8])): "Cucumber Mosaic Virus", # Tomato, Wilting (2), Yellowing (3), Mosaic (8) - Can affect tomatoes too
+
+    # Potato Diseases (Plant ID 2)
+    (2, frozenset([1, 2])): "Early Blight",         # Potato, Leaf Spot (1), Wilting (2)
+    (2, frozenset([1, 4])): "Late Blight",         # Potato, Leaf Spot (1), Stem Rot (4)
+    (2, frozenset([7])): "Powdery Mildew",         # Potato, Powdery Mildew (7) - general
+
+    # Corn Diseases (Plant ID 3 - assuming Corn got ID 3 from sequential seeding)
+    (3, frozenset([6, 3])): "Corn Common Rust",     # Corn, Rust Spots (6), Yellowing Leaves (3)
+
+    # Cucumber Diseases (Plant ID 4 - assuming Cucumber got ID 4)
+    (4, frozenset([8, 2])): "Cucumber Mosaic Virus", # Cucumber, Mosaic Pattern (8), Wilting (2)
+    (4, frozenset([7])): "Powdery Mildew",         # Cucumber, Powdery Mildew (7)
+
+    # --- Add more rules as needed ---
+    # Example for general disease on multiple plants, you can make more specific rules
+    # (PLANT_ID, frozenset([SYMPTOM_ID, ...])): "DISEASE_NAME"
+}
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        data = request.get_json()
+        plant_id = data.get('plant_id')
+        symptom_ids = data.get('symptom_ids', [])
+
+        if not plant_id or not symptom_ids:
+            return jsonify({"error": "Missing plant_id or symptom_ids"}), 400
+
+        sorted_symptom_ids = frozenset(sorted(symptom_ids))
+
+        predicted_disease_name = PREDICTION_RULES.get((plant_id, sorted_symptom_ids))
+
+        # Fallback if no specific rule matches (as per previous logic)
+        # You might want to make this fallback more sophisticated or remove it
+        # as your rule set grows.
+        if predicted_disease_name is None:
+            print(f"No specific prediction rule for plant_id={plant_id}, symptom_ids={sorted(symptom_ids)}. No fallback defined for this combination.")
+            # return jsonify({"predicted_disease_name": "Unknown Disease", "message": "No specific rule matched."}), 200 # Consider a 'no match' response
+            return jsonify({"predicted_disease_name": None}), 200 # Revert to previous behavior of returning null
+
+        return jsonify({"predicted_disease_name": predicted_disease_name}), 200
+
+    except Exception as e:
+        print(f"Error during prediction: {e}")
+        return jsonify({"predicted_disease_name": None, "message": f"Error during prediction: {str(e)}"}), 500
+
+# Basic health check endpoint
+@app.route('/')
+def home():
+    return "AI Prediction Service (Rule-Based) is running!"
+
+if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5001)
