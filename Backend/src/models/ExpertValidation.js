@@ -1,4 +1,4 @@
-// src/models/ExpertValidation.js
+
 module.exports = (sequelize, DataTypes) => {
     const ExpertValidation = sequelize.define('ExpertValidation', {
         id: {
@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         diagnosis_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            unique: true, // One validation per diagnosis
+            unique: true,
             references: {
                 model: 'diagnoses',
                 key: 'id',
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             },
         },
-        previous_diagnosis_id: { // The diagnosis before expert validation (e.g., AI or preliminary)
+        previous_diagnosis_id: { 
             type: DataTypes.INTEGER,
             allowNull: true,
             references: {
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             },
         },
-        new_diagnosis_id: { // The expert's final diagnosis
+        new_diagnosis_id: { 
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             },
         },
-        validation_status: { // e.g., 'validated', 'rejected', 'needs_more_info'
+        validation_status: { 
             type: DataTypes.STRING(50),
             allowNull: false,
         },

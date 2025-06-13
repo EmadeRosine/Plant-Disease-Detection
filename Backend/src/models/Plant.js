@@ -1,4 +1,4 @@
-// src/models/Plant.js
+
 module.exports = (sequelize, DataTypes) => {
     const Plant = sequelize.define('Plant', {
         id: {

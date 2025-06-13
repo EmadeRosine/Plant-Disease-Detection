@@ -1,4 +1,4 @@
-// src/models/User.js
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         id: {
@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         role: {
             type: DataTypes.STRING(50),
             allowNull: false,
-            defaultValue: 'farmer', // Default role
+            defaultValue: 'farmer', 
         },
         created_at: {
             type: DataTypes.DATE,
@@ -26,11 +26,11 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.NOW,
         },
     }, {
-        tableName: 'users', // Matches your database table name
-        timestamps: false, // We use created_at manually
+        tableName: 'users',
+        timestamps: false, 
     });
 
-    // Define associations
+   
     User.associate = (models) => {
         User.hasMany(models.Diagnosis, { foreignKey: 'farmer_id', as: 'diagnoses' });
         User.hasMany(models.ExpertValidation, { foreignKey: 'expert_id', as: 'expertValidations' });

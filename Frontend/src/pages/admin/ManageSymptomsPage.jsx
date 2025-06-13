@@ -1,8 +1,8 @@
-// src/pages/admin/ManageSymptomsPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/api'; // Corrected import path
-import { useAuth } from '../../auth/AuthContext'; // Corrected import path
+import api from '../../api/api'; 
+import { useAuth } from '../../auth/AuthContext'; 
 
 const ManageSymptomsPage = () => {
     const [symptoms, setSymptoms] = useState([]);
@@ -41,7 +41,7 @@ const ManageSymptomsPage = () => {
             setNewName('');
             setNewDescription('');
             setNewType('');
-            fetchSymptoms(); // Refresh list
+            fetchSymptoms(); 
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to create symptom.');
         }

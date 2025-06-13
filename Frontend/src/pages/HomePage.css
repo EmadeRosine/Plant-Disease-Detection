@@ -1,16 +1,15 @@
-/* General Container for Homepage */
+
 .homepage {
   width: 100%;
-  min-height: calc(100vh - 60px); /* Adjust based on your NavBar height */
+  min-height: calc(100vh - 60px);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px; /* Add some padding around the content */
-  box-sizing: border-box; /* Include padding in element's total width and height */
-  font-family: 'Inter', sans-serif; /* Ensure font is applied */
+  padding: 20px; 
+  box-sizing: border-box; 
+  font-family: 'Inter', sans-serif;
 }
 
-/* Logged-in welcome section styling */
 .logged-in-welcome {
   text-align: center;
   background-color: #f8f8f8;
@@ -22,7 +21,7 @@
 }
 
 .logged-in-welcome h2 {
-  color: #28a745; /* Green color */
+  color: #28a745; 
   margin-bottom: 20px;
 }
 
@@ -33,7 +32,7 @@
 }
 
 .logged-in-welcome a {
-  color: #007bff; /* Blue link color */
+  color: #007bff;
   text-decoration: none;
   font-weight: bold;
 }
@@ -43,22 +42,20 @@
 }
 
 
-/* Hero Section for Not Logged In */
+
 .hero-section {
   width: 100%;
-  max-width: 1200px; /* Max width to contain the hero section */
-  height: 500px; /* Fixed height for the hero section */
-  /* NEW BACKGROUND IMAGE: A generic crop field or hand holding plant */
-  background-image: url('https://images.unsplash.com/photo-1516253509930-b39174697950?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MDcxMzJ8MHwxfHNlYXJjaHw0fHByYW50aW5nfGVufDB8fHx8MTcwMDQzNjg2OXww&ixlib=rb-4.0.3&q=80&w=1080');
+  max-width: 1200px; 
+  height: 500px; 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 15px; /* Rounded corners for the entire section */
-  overflow: hidden; /* Ensures content/overlay respects rounded corners */
+  border-radius: 15px; 
+  overflow: hidden; 
   display: flex;
-  align-items: center; /* Vertically center content wrapper */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-  position: relative; /* For absolute positioning of overlay/content */
+  align-items: center; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+  position: relative; 
 }
 
 .hero-content-wrapper {
@@ -69,37 +66,37 @@
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Align content to the left */
-  padding-left: 5%; /* Padding from the left edge */
+  justify-content: flex-start;
+  padding-left: 5%; 
   box-sizing: border-box;
-  /* Green overlay with a curved shape using gradients */
+ 
   background: linear-gradient(to right, rgba(40, 167, 69, 0.9) 0%, rgba(40, 167, 69, 0.9) 50%, rgba(40, 167, 69, 0) 100%);
-  clip-path: ellipse(60% 100% at 0% 50%); /* Creates a left-side curved overlay */
-  transform: translateX(-10%); /* Adjust to move the curve more to the left */
-  padding: 50px 0; /* Vertical padding */
-  z-index: 1; /* Ensure it's above the background image */
+  clip-path: ellipse(60% 100% at 0% 50%); 
+  transform: translateX(-10%);
+  padding: 50px 0;
+  z-index: 1; 
 }
 
-/* Adjust the hero-content wrapper to make the green section a bit wider */
+
 .hero-content-wrapper {
-    width: 70%; /* Make it wider to cover more of the image from left */
-    /* Other styles as above */
-    padding-left: 10%; /* More padding from the left edge */
+    width: 70%; 
+   
+    padding-left: 10%; 
 }
 
 
 .hero-content {
-  color: white; /* White text for contrast */
+  color: white; 
   text-align: left;
-  max-width: 400px; /* Limit content width */
+  max-width: 400px; 
   padding: 20px;
   border-radius: 8px;
-  z-index: 2; /* Ensure text is above the green overlay */
-  transform: translateX(10%); /* Shift content slightly right to sit within the curve */
+  z-index: 2; 
+  transform: translateX(10%);
 }
 
 .hero-content h1 {
-  font-size: 3.5em; /* Larger heading */
+  font-size: 3.5em; 
   margin-bottom: 10px;
   line-height: 1.1;
   font-weight: bold;
@@ -113,23 +110,23 @@
 
 .join-us-button {
   display: inline-block;
-  background-color: #fff; /* White background for the button */
-  color: #28a744; /* Green text matching the theme */
+  background-color: #fff; 
+  color: #28a744; 
   padding: 12px 25px;
-  border-radius: 30px; /* Pill-shaped button */
+  border-radius: 30px; 
   text-decoration: none;
   font-weight: bold;
   font-size: 1.1em;
   transition: background-color 0.3s ease, color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Button shadow */
-  display: flex; /* Use flex to align text and arrow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex; 
   align-items: center;
-  gap: 8px; /* Space between text and arrow */
+  gap: 8px;
 }
 
 .join-us-button:hover {
   background-color: #f0f0f0;
-  color: #1e7e34; /* Slightly darker green on hover */
+  color: #1e7e34; 
 }
 
 .arrow-icon {
@@ -138,19 +135,19 @@
 }
 
 .join-us-button:hover .arrow-icon {
-  transform: translateX(5px); /* Slide arrow on hover */
+  transform: translateX(5px); 
 }
 
 
 /* Responsive Adjustments */
 @media (max-width: 900px) {
   .hero-section {
-    height: 400px; /* Adjust height for smaller screens */
+    height: 400px; 
   }
 
   .hero-content-wrapper {
-    width: 80%; /* Make green overlay wider */
-    clip-path: ellipse(75% 100% at 0% 50%); /* Adjust curve */
+    width: 80%; 
+    clip-path: ellipse(75% 100% at 0% 50%);
     transform: translateX(-15%);
     padding-left: 8%;
   }
@@ -167,15 +164,15 @@
 
 @media (max-width: 600px) {
   .hero-section {
-    height: 350px; /* Further adjust height */
+    height: 350px; 
     border-radius: 10px;
   }
 
   .hero-content-wrapper {
-    width: 100%; /* Make green overlay full width */
-    clip-path: none; /* Remove curve for very small screens */
+    width: 100%;
+    clip-path: none; 
     transform: translateX(0);
-    justify-content: center; /* Center content on small screens */
+    justify-content: center; 
     padding: 20px;
   }
 

@@ -1,20 +1,20 @@
-// src/controllers/authController.js
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Import our User model
-require('dotenv').config(); // Load environment variables
+const User = require('../models/User');
+require('dotenv').config(); 
 
 const register = async (req, res) => {
     const { username, password, role } = req.body;
 
     try {
-        // Check if user already exists
+       
         let user = await User.findOne({ where: { username } });
         if (user) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Hash password
+        
         const salt = await bcrypt.genSalt(10);
         const password_hash = await bcrypt.hash(password, salt);
 
@@ -22,7 +22,7 @@ const register = async (req, res) => {
         user = await User.create({
             username,
             password_hash,
-            role: role || 'farmer', // Default to 'farmer' if not provided
+            role: role || 'farmer', 
         });
 
         // Generate JWT token
@@ -36,7 +36,7 @@ const register = async (req, res) => {
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }, // Token expires in 1 hour
+            { expiresIn: '1h' }, 
             (err, token) => {
                 if (err) throw err;
                 res.status(201).json({ token, user: { id: user.id, username: user.username, role: user.role } });

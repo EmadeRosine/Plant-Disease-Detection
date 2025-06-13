@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import './HomePage.css'; // Keep the CSS import
+import './HomePage.css'; 
 
 const HomePage = () => {
   const { user } = useAuth();
@@ -9,7 +9,7 @@ const HomePage = () => {
   return (
     <div className="homepage">
       {user ? (
-        // Display a simpler welcome for logged-in users
+       
         <div className="logged-in-welcome">
           <h2>Welcome Back, {user.username}!</h2>
           <p>You are logged in as a {user.role}.</p>
@@ -17,9 +17,9 @@ const HomePage = () => {
           {user.role === 'admin' && <p>Visit the <Link to="/admin">Admin Dashboard</Link> for management tasks.</p>}
         </div>
       ) : (
-        // Display the hero section for logged-out users
+        
         <div className="hero-section">
-          {/* This wrapper ensures the green overlay and text are positioned correctly over the background image */}
+        
           <div className="hero-content-wrapper">
             <div className="hero-content">
               <h1>YOUR CROP DOCTOR</h1>

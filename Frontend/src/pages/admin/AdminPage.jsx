@@ -1,7 +1,7 @@
-// src/pages/admin/AdminPage.jsx
+
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/AuthContext'; // Corrected import path
+import { useAuth } from '../../auth/AuthContext'; 
 
 const AdminPage = () => {
   const { user } = useAuth();
@@ -9,7 +9,7 @@ const AdminPage = () => {
 
   useEffect(() => {
     if (user?.role !== 'admin') {
-      navigate('/'); // Redirect if not admin
+      navigate('/'); 
     }
   }, [user, navigate]);
 

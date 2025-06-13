@@ -1,20 +1,20 @@
-// src/middleware/authMiddleware.js
+
 const jwt = require('jsonwebtoken');
 const db = require('../models');
-const User = db.User; // Access the User model
+const User = db.User; 
 
 const protect = async (req, res, next) => {
     let token;
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            // Get token from header
+          
             token = req.headers.authorization.split(' ')[1];
 
-            // Verify token
+          
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // Attach user to the request object (without password hash)
+        
             req.user = await User.findByPk(decoded.id, {
                 attributes: { exclude: ['password_hash'] }
             });
@@ -23,7 +23,7 @@ const protect = async (req, res, next) => {
                 return res.status(401).json({ error: 'Not authorized, user not found' });
             }
 
-            next(); // Proceed to the next middleware/route handler
+            next(); 
         } catch (error) {
             console.error('Auth Middleware Error:', error);
             if (error.name === 'TokenExpiredError') {

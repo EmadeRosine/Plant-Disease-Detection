@@ -1,14 +1,12 @@
-// src/controllers/symptomController.js
+
 const db = require('../models');
 const Symptom = db.Symptom;
 
-// @desc    Create a new symptom
-// @route   POST /api/symptoms
-// @access  Private (Admin)
+
 const createSymptom = async (req, res) => {
     const { name, description, type } = req.body;
 
-    // Basic validation
+
     if (!name) {
         return res.status(400).json({ error: 'Symptom name is required.' });
     }
@@ -17,24 +15,22 @@ const createSymptom = async (req, res) => {
         const symptom = await Symptom.create({ name, description, type });
         res.status(201).json(symptom);
     } catch (error) {
-        console.error('Error creating symptom:', error); // Generic log
-        // More specific error logging for Sequelize validation/database errors
+        console.error('Error creating symptom:', error);
+  
         if (error.name === 'SequelizeUniqueConstraintError') {
             return res.status(409).json({ error: 'Symptom with this name already exists.' });
         }
         if (error.name === 'SequelizeValidationError') {
-            // Extracts validation messages from Sequelize
+        
             const errors = error.errors.map(err => err.message);
             return res.status(400).json({ error: errors.join(', ') });
         }
-        // Generic server error
+
         res.status(500).json({ error: 'Server error when creating symptom.' });
     }
 };
 
-// @desc    Get all symptoms
-// @route   GET /api/symptoms
-// @access  Public (or Private depending on app design)
+
 const getSymptoms = async (req, res) => {
     try {
         const symptoms = await Symptom.findAll();

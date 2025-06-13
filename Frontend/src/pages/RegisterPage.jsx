@@ -1,7 +1,7 @@
-// src/pages/RegisterPage.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/api'; // Corrected import path
+import api from '../api/api'; 
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');

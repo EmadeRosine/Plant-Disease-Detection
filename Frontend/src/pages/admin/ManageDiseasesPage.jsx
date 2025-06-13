@@ -1,17 +1,17 @@
-// src/pages/admin/ManageDiseasesPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/api'; // Corrected import path
-import { useAuth } from '../../auth/AuthContext'; // Corrected import path
+import api from '../../api/api'; 
+import { useAuth } from '../../auth/AuthContext'; 
 
 const ManageDiseasesPage = () => {
     const [diseases, setDiseases] = useState([]);
-    const [symptoms, setSymptoms] = useState([]); // All available symptoms
+    const [symptoms, setSymptoms] = useState([]); 
     const [newName, setNewName] = useState('');
     const [newDescription, setNewDescription] = useState('');
     const [newSymptomsDescription, setNewSymptomsDescription] = useState('');
     const [newTreatmentRecommendations, setNewTreatmentRecommendations] = useState('');
-    const [selectedSymptoms, setSelectedSymptoms] = useState([]); // Symptoms for the new disease
+    const [selectedSymptoms, setSelectedSymptoms] = useState([]); 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const { user } = useAuth();
@@ -69,7 +69,7 @@ const ManageDiseasesPage = () => {
             setNewSymptomsDescription('');
             setNewTreatmentRecommendations('');
             setSelectedSymptoms([]);
-            fetchAllData(); // Refresh list
+            fetchAllData(); 
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to create disease.');
         }

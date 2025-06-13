@@ -1,4 +1,4 @@
-// src/models/Symptom.js
+
 module.exports = (sequelize, DataTypes) => {
     const Symptom = sequelize.define('Symptom', {
         id: {
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: true,
         },
-        type: { // e.g., 'Leaf', 'Stem', 'Fruit'
+        type: { 
             type: DataTypes.STRING(100),
             allowNull: true,
         },
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Symptom.associate = (models) => {
-        // Many-to-Many with Disease through DiseaseSymptom
+   
         Symptom.belongsToMany(models.Disease, {
             through: models.DiseaseSymptom,
             foreignKey: 'symptom_id',

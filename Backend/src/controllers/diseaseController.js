@@ -1,19 +1,17 @@
-// src/controllers/diseaseController.js
+
 const db = require('../models');
 const Disease = db.Disease;
 const Symptom = db.Symptom;
 const DiseaseSymptom = db.DiseaseSymptom;
 
-// @desc    Get all diseases
-// @route   GET /api/diseases
-// @access  Public
+
 const getDiseases = async (req, res) => {
     try {
         const diseases = await Disease.findAll({
             include: [{
                 model: Symptom,
                 as: 'Symptoms',
-                through: { attributes: ['severity_level'] }, // Include join table attributes
+                through: { attributes: ['severity_level'] },
                 attributes: ['id', 'name']
             }],
             order: [['name', 'ASC']]
@@ -25,9 +23,7 @@ const getDiseases = async (req, res) => {
     }
 };
 
-// @desc    Create a new disease
-// @route   POST /api/diseases
-// @access  Private (Admin only)
+
 const createDisease = async (req, res) => {
     const { name, description, symptoms_description, treatment_recommendations, symptom_ids } = req.body;
 
@@ -56,8 +52,8 @@ const createDisease = async (req, res) => {
             treatment_recommendations
         });
 
-        // Add symptoms to the disease through the join table
-        await disease.addSymptoms(symptoms); // Sequelize's magic method
+       
+        await disease.addSymptoms(symptoms); 
 
         const createdDisease = await Disease.findByPk(disease.id, {
             include: [{

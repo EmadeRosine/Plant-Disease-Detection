@@ -1,9 +1,8 @@
-// src/pages/LoginPage.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext'; // Corrected import path
-import api from '../api/api'; // Corrected import path
-
+import { useAuth } from '../auth/AuthContext';
+import api from '../api/api'; 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

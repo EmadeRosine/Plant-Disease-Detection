@@ -1,4 +1,4 @@
-// src/models/Diagnosis.js
+
 module.exports = (sequelize, DataTypes) => {
     const Diagnosis = sequelize.define('Diagnosis', {
         id: {
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             },
         },
         observed_symptom_ids: {
-            type: DataTypes.ARRAY(DataTypes.INTEGER), // Store an array of symptom IDs
+            type: DataTypes.ARRAY(DataTypes.INTEGER), 
             allowNull: false,
         },
         preliminary_diagnosis_id: {
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
                 key: 'id',
             },
         },
-        status: { // e.g., 'pending_review', 'validated', 'rejected', 'needs_more_info'
+        status: { 
             type: DataTypes.STRING(50),
             allowNull: false,
             defaultValue: 'pending_review',

@@ -4,31 +4,31 @@ import api from '../api/api';
 import { useAuth } from '../auth/AuthContext';
 
 const DiagnosisDetailPage = () => {
-    const { id } = useParams(); // Get diagnosis ID from URL
-    const [diagnosis, setDiagnosis] = useState(null); // State to hold diagnosis details
-    const [diseasesForValidation, setDiseasesForValidation] = useState([]); // State to hold list of diseases for validation dropdown
-    const [expertDiagnosisId, setExpertDiagnosisId] = useState(''); // State for expert's chosen disease ID
-    const [validationStatus, setValidationStatus] = useState(''); // State for expert's chosen validation status
-    const [expertNotes, setExpertNotes] = useState(''); // State for expert's notes
-    const [error, setError] = useState(''); // State for error messages
-    const [success, setSuccess] = useState(''); // State for success messages
-    const { user } = useAuth(); // Get current user from AuthContext
-    const navigate = useNavigate(); // For navigation
+    const { id } = useParams(); 
+    const [diagnosis, setDiagnosis] = useState(null); 
+    const [diseasesForValidation, setDiseasesForValidation] = useState([]);
+    const [expertDiagnosisId, setExpertDiagnosisId] = useState(''); 
+    const [validationStatus, setValidationStatus] = useState(''); 
+    const [expertNotes, setExpertNotes] = useState(''); 
+    const [error, setError] = useState(''); 
+    const [success, setSuccess] = useState('');
+    const { user } = useAuth(); 
+    const navigate = useNavigate(); 
 
-    // Function to fetch diagnosis details from the backend
+ 
     const fetchDiagnosis = async () => {
         try {
             const res = await api.get(`/diagnoses/${id}`);
-            setDiagnosis(res.data); // Set the fetched diagnosis data
-            //here, If the diagnosis has already been validated by an expert, pre-fill the form
+            setDiagnosis(res.data); 
+            
             if (res.data.expertValidation) {
                 setExpertDiagnosisId(res.data.expertValidation.new_diagnosis_id || '');
                 setValidationStatus(res.data.expertValidation.validation_status || '');
                 setExpertNotes(res.data.expertValidation.notes || '');
             } else {
-                // If not yet validated, then try to pre-fill with AI suggestion or preliminary diagnosis ID
+              
                 setExpertDiagnosisId(res.data.aiSuggestedDiagnosis?.id || res.data.preliminaryDiagnosis?.id || '');
-                setValidationStatus('pending_review'); // Default status for a new validation
+                setValidationStatus('pending_review');
                 setExpertNotes('');
             }
         } catch (err) {
@@ -40,8 +40,8 @@ const DiagnosisDetailPage = () => {
     // Function to fetch all available diseases for the expert's validation dropdown
     const fetchDiseasesForValidation = async () => {
         try {
-            const diseasesRes = await api.get('/diseases'); // Fetch all diseases from backend
-            setDiseasesForValidation(diseasesRes.data); // Store them
+            const diseasesRes = await api.get('/diseases'); 
+            setDiseasesForValidation(diseasesRes.data); 
         } catch (err) {
             setError('Failed to load diseases for validation.');
             console.error(err);
@@ -57,19 +57,19 @@ const DiagnosisDetailPage = () => {
         }
         // Fetch diagnosis details
         fetchDiagnosis();
-        // Only fetch diseases for validation if the logged-in user is an expert or admin
+        
         if (user.role === 'expert' || user.role === 'admin') {
             fetchDiseasesForValidation();
         }
-    }, [id, user, navigate]); // Dependencies: re-run if ID, user, or navigate changes
+    }, [id, user, navigate]); 
 
     // Handler for submitting the expert validation form
     const handleValidationSubmit = async (e) => {
-        e.preventDefault(); // Prevent default form submission behavior
-        setError('');      // Clear previous errors
-        setSuccess('');    // Clear previous success messages
+        e.preventDefault(); 
+        setError('');     
+        setSuccess('');    
 
-        // Basic validation for the form inputs
+      
         if (!expertDiagnosisId || !validationStatus) {
             setError('Please select an expert diagnosis and validation status.');
             return;
@@ -82,7 +82,7 @@ const DiagnosisDetailPage = () => {
                 validation_status: validationStatus,
                 expert_notes: expertNotes,
             });
-            setSuccess('Diagnosis validated successfully!'); // Set success message
+            setSuccess('Diagnosis validated successfully!'); 
             setDiagnosis(res.data);
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to validate diagnosis.');
@@ -90,7 +90,7 @@ const DiagnosisDetailPage = () => {
         }
     };
 
-    // Display loading message while diagnosis data is being fetched
+    
     if (!diagnosis) return <div className="container">Loading diagnosis...</div>;
 
     // Helper function to apply CSS class based on diagnosis status

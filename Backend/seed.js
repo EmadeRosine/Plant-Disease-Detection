@@ -1,18 +1,14 @@
-// seed.js
+
 const db = require('./src/models');
 const bcrypt = require('bcryptjs');
 
 const seedDatabase = async () => {
     try {
-        // Option A: Ensure tables are clean by forcing sync (DANGEROUS IN PRODUCTION!)
-        // Temporarily set force: true for a clean start during development/debugging
+
         await db.sequelize.sync({ force: true });
         console.log('Database synced (FORCE TRUE) for seeding.');
 
-        // Remember to change it back to { alter: true } in src/config/db.js later!
-        // The above line is just a development shortcut.
-
-        // 1. Create Users (Admin, Expert, Farmer)
+   
         const passwordHash = await bcrypt.hash('password123', 10);
 
         const [adminUser] = await db.User.findOrCreate({
@@ -33,7 +29,7 @@ const seedDatabase = async () => {
         });
         console.log('Users seeded/checked.');
 
-        // 2. Create Plants
+
         const [tomatoPlant] = await db.Plant.findOrCreate({
             where: { name: 'Tomato' },
             defaults: { name: 'Tomato', description: 'Common garden tomato plant.', image_url: 'https://example.com/tomato.jpg' }
@@ -52,9 +48,9 @@ const seedDatabase = async () => {
         });
         console.log('Plants seeded/checked.');
 
-        // 3. Create Symptoms (Using explicit IDs helps for rule-based AI consistency)
+      
         const [leafSpot] = await db.Symptom.findOrCreate({
-            where: { id: 1 }, // Explicit ID for clarity in rules
+            where: { id: 1 }, 
             defaults: { name: 'Leaf Spot', description: 'Dark spots on leaves.', type: 'Leaf' }
         });
         const [wilting] = await db.Symptom.findOrCreate({
@@ -87,7 +83,7 @@ const seedDatabase = async () => {
         });
         console.log('Symptoms seeded/checked.');
 
-        // 4. Create Diseases and Associate Symptoms
+       
         const [earlyBlight] = await db.Disease.findOrCreate({
             where: { name: 'Early Blight' },
             defaults: {
@@ -97,7 +93,7 @@ const seedDatabase = async () => {
                 treatment_recommendations: 'Fungicides, rotation, remove infected leaves.'
             }
         });
-        await earlyBlight.addSymptoms([leafSpot, wilting]); // Pass instances directly
+        await earlyBlight.addSymptoms([leafSpot, wilting]); 
 
         const [lateBlight] = await db.Disease.findOrCreate({
             where: { name: 'Late Blight' },
@@ -160,9 +156,9 @@ const seedDatabase = async () => {
     } catch (error) {
         console.error('Error seeding database:', error);
     } finally {
-        await db.sequelize.close(); // Close the connection after seeding
+        await db.sequelize.close();
     }
 };
 
-// Execute the seeding function
+
 seedDatabase();

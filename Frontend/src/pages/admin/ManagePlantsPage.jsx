@@ -1,14 +1,14 @@
-// src/pages/admin/ManagePlantsPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/api'; // Corrected import path
-import { useAuth } from '../../auth/AuthContext'; // Corrected import path
+import api from '../../api/api'; 
+import { useAuth } from '../../auth/AuthContext'; 
 
 const ManagePlantsPage = () => {
     const [plants, setPlants] = useState([]);
     const [newName, setNewName] = useState('');
     const [newDescription, setNewDescription] = useState('');
-    const [newImageUrl, setNewImageUrl] = useState(''); // Corrected variable name
+    const [newImageUrl, setNewImageUrl] = useState(''); 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const { user } = useAuth();
@@ -40,8 +40,8 @@ const ManagePlantsPage = () => {
             setSuccess('Plant created successfully!');
             setNewName('');
             setNewDescription('');
-            setNewImageUrl(''); // Corrected variable name
-            fetchPlants(); // Refresh list
+            setNewImageUrl(''); 
+            fetchPlants(); 
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to create plant.');
         }

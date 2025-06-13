@@ -1,8 +1,8 @@
-// src/pages/SubmitDiagnosisPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api/api'; // Corrected import path
-import { useAuth } from '../auth/AuthContext'; // Corrected import path
+import api from '../api/api';
+import { useAuth } from '../auth/AuthContext'; 
 
 const SubmitDiagnosisPage = () => {
   const [plants, setPlants] = useState([]);
@@ -61,7 +61,7 @@ const SubmitDiagnosisPage = () => {
       setSelectedPlant('');
       setSelectedSymptoms([]);
       setFarmerNotes('');
-      navigate('/diagnoses'); // Redirect to diagnoses list
+      navigate('/diagnoses'); 
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to submit diagnosis.');
       console.error(err);

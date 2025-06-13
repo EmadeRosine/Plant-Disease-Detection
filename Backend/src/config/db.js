@@ -1,4 +1,4 @@
-// src/config/db.js
+
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
@@ -10,9 +10,9 @@ const sequelize = new Sequelize(
         host: process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'postgres',
-        logging: false, // Set to true to see SQL queries in console during development
+        logging: false, 
         define: {
-            timestamps: false, // Disables default createdAt and updatedAt columns
+            timestamps: false, 
         },
         pool: {
             max: 5,

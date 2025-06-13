@@ -1,19 +1,17 @@
-// src/controllers/userController.js
+
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../models'); // Import the db object
+const db = require('../models'); 
 const User = db.User;
 
-// Helper function to generate JWT token
+
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
     });
 };
 
-// @desc    Register new user
-// @route   POST /api/users/register
-// @access  Public
+
 const registerUser = async (req, res) => {
     const { username, password, role } = req.body;
 
@@ -21,7 +19,7 @@ const registerUser = async (req, res) => {
         return res.status(400).json({ error: 'Please enter all fields' });
     }
 
-    // Check if user exists
+    
     const userExists = await User.findOne({ where: { username } });
     if (userExists) {
         return res.status(400).json({ error: 'User already exists' });
@@ -36,7 +34,7 @@ const registerUser = async (req, res) => {
         const user = await User.create({
             username,
             password_hash,
-            role: role || 'farmer', // Default role to 'farmer' if not provided
+            role: role || 'farmer', 
         });
 
         if (user) {
@@ -55,9 +53,7 @@ const registerUser = async (req, res) => {
     }
 };
 
-// @desc    Authenticate a user
-// @route   POST /api/users/login
-// @access  Public
+
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
 
@@ -76,11 +72,9 @@ const loginUser = async (req, res) => {
     }
 };
 
-// @desc    Get user data
-// @route   GET /api/users/me
-// @access  Private
+
 const getMe = async (req, res) => {
-    // req.user is set by the protect middleware
+  
     res.json(req.user);
 };
 

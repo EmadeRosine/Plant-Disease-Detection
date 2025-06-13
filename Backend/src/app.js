@@ -1,11 +1,11 @@
-// src/app.js
+
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const plantRoutes = require('./routes/plantRoutes');
 const symptomRoutes = require('./routes/symptomRoutes');
 const diseaseRoutes = require('./routes/diseaseRoutes');
-const diagnosisRoutes = require('./routes/diagnosisRoutes'); // New
+const diagnosisRoutes = require('./routes/diagnosisRoutes'); 
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use('/api/symptoms', symptomRoutes);
 app.use('/api/diseases', diseaseRoutes);
 app.use('/api/diagnoses', diagnosisRoutes); 
 
-// Basic test route
+
 app.get('/', (req, res) => {
     res.send('Expert System Backend API is running!');
 });

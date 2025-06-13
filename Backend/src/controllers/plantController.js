@@ -1,10 +1,8 @@
-// src/controllers/plantController.js
+
 const db = require('../models');
 const Plant = db.Plant;
 
-// @desc    Get all plants
-// @route   GET /api/plants
-// @access  Public (or Private depending on your design)
+
 const getPlants = async (req, res) => {
     try {
         const plants = await Plant.findAll({
@@ -17,9 +15,7 @@ const getPlants = async (req, res) => {
     }
 };
 
-// @desc    Create a new plant
-// @route   POST /api/plants
-// @access  Private (Admin only)
+
 const createPlant = async (req, res) => {
     const { name, description, image_url } = req.body;
 

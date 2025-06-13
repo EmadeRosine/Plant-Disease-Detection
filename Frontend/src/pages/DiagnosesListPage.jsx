@@ -51,8 +51,7 @@ const DiagnosesListPage = () => {
       {diagnoses.length === 0 && !error ? (
         <p>No diagnoses found.</p>
       ) : (
-        // Use a table to display diagnoses
-        <div className="table-responsive"> {/* Wrapper for responsive table */}
+        <div className="table-responsive"> 
           <table className="diagnoses-table">
             <thead>
               <tr>
